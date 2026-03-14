@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lot Draw</title>
+  <link rel="stylesheet" href="css/styles.css" />
+</head>
+<body>
+<div id="app">
+  <p id="title">Lot Draw</p>
+  <p id="subtitle">Add names and draw a random winner</p>
+
+  <div id="input-row">
+    <input id="name-input" type="text" placeholder="Enter a name…" maxlength="40" autocomplete="off" />
+    <button id="add-btn" onclick="addName()">Add</button>
+  </div>
+  <div id="error-msg"></div>
+  <div id="names-pool"></div>
+  <div id="count-bar"></div>
+
+  <button id="draw-btn" onclick="startDraw()" disabled>Pick a name</button>
+
+  <div id="result-area">
+    <div id="loading-ring">
+      <div class="ring"></div>
+      <span id="loading-names"></span>
+    </div>
+
+    <div id="winner-section">
+      <div id="winner-card">
+        <p id="winner-label">Winner</p>
+        <p id="winner-name"></p>
+        <p id="winner-sub"></p>
+      </div>
+
+      <div id="shuffle-reveal">
+        <div id="shuffle-header">
+          <span id="shuffle-title">Full shuffle order</span>
+        </div>
+        <div id="shuffle-list"></div>
+      </div>
+
+      <p class="trust-note">
+        This draw runs entirely in your browser. No data is sent anywhere.<br>
+        The result is determined by your device's random number generator.
+      </p>
+    </div>
+
+    <div id="empty-hint">Add at least 2 names to start drawing.</div>
+  </div>
+</div>
+
+<script src="js/app.js"></script>
+</body>
+</html>
