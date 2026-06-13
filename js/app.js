@@ -48,18 +48,44 @@ function updateUI() {
 }
 
 function addName() {
-  const value = input.value.trim();
-  if (!value) return;
+  const rawValue = input.value.trim();
+  if (!rawValue) return;
 
-  if (names.some((name) => name.toLowerCase() === value.toLowerCase())) {
-    setError(`"${value}" is already in the list.`);
-    return;
-  }
+  // Split by newlines (handles pasted multi-line lists)
+  const lines = rawValue.split(/\r?\n/).map((line) => line.trim()).filter(Boolean);
+  console.log({lines, rawValue})
 
-  names.push(value);
+  let addedCount = 0;
+  let duplicates = [];
+
+  lines.forEach((line) => {
+    const isDuplicate = names.some(
+      (name) => name.toLowerCase() === line.toLowerCase()
+    ) || lines.filter((l) => l.toLowerCase() === line.toLowerCase()).indexOf(line) !==
+       lines.findIndex((l) => l.toLowerCase() === line.toLowerCase());
+
+    const alreadyExists = names.some((name) => name.toLowerCase() === line.toLowerCase());
+
+    if (alreadyExists) {
+      duplicates.push(line);
+    } else {
+      names.push(line);
+      addedCount++;
+    }
+  });
+
   input.value = "";
   input.focus();
   winnerSection.style.display = "none";
+
+  if (duplicates.length > 0) {
+    setError(
+      duplicates.length === 1
+        ? `"${duplicates[0]}" is already in the list.`
+        : `${duplicates.length} duplicate names were skipped.`
+    );
+  }
+
   updateUI();
 }
 
@@ -118,6 +144,22 @@ function startDraw() {
 
 input.addEventListener("keydown", (event) => {
   if (event.key === "Enter") addName();
+});
+
+// Auto-resize as user types/pastes
+input.addEventListener("input", () => {
+  input.style.height = "auto";
+  input.style.height = Math.min(input.scrollHeight, 160) + "px";
+});
+
+// Submit on Enter, but allow Shift+Enter for new line
+input.addEventListener("keydown", (e) => {
+  console.log('yesss')
+  if (e.key === "Enter" && !e.shiftKey) {
+    e.preventDefault();
+    addName();
+    input.style.height = "auto"; // reset height after clearing
+  }
 });
 
 window.addName = addName;
